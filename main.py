@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import easywebdav
 from os import mkdir
 from time import sleep
@@ -25,7 +27,7 @@ def isDirectory(files, directories, realDirectories, baseDirectory):
     return files, directories, realDirectories
     
 def fixString(temp):
-    return temp.replace('%20', ' ').replace('%C3%A0', 'a').replace('%C3%B3', 'o').replace('%C3%A8', 'e').replace('%C3%A9', 'e').replace('%C3%A1', 'a').replace('%C3%8D', 'I').replace('%C3%93', 'O')
+    return temp.replace('%20', ' ').replace('%C3%A0', 'a').replace('%C3%B3', 'o').replace('%C3%A8', 'e').replace('%C3%A9', 'e').replace('%C3%A1', 'a').replace('%C3%8D', 'I').replace('%C3%93', 'O').replace('%C3%B1', 'ñ'.encode('utf8'))
     
 def generateDir(name):
     try:
@@ -35,6 +37,9 @@ def generateDir(name):
         pass
         
 def main():
+    if len(sys.argv) != 2:
+        print "ERROR USUARIO"
+        return -1
     base = "downloads/"
     generateDir(base)
     baseDirectories = [["/dav/102013-1718/", "AMSA"], 
@@ -60,7 +65,7 @@ def main2(base, baseDirectory):
     print "https://cv.udl.cat" + baseDirectory # DIRECCIO AMSA
     passw = open("pass", "r")
     webdav = easywebdav.connect('cv.udl.cat',
-                                username='dcv4',
+                                username=sys.argv[1],
                                 password=passw.read(),
                                 protocol='https',
                                 cert='')
