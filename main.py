@@ -23,11 +23,10 @@ def isDirectory(files, directories, realDirectories, baseDirectory):
             i-=1
         i+=1
     
-    
     return files, directories, realDirectories
     
 def fixString(temp):
-    return temp.replace('%20', ' ').replace('%C3%A0', 'a').replace('%C3%B3', 'o').replace('%C3%A8', 'e').replace('%C3%A9', 'e').replace('%C3%A1', 'a').replace('%C3%8D', 'I').replace('%C3%93', 'O').replace('%C3%B1', u'ñ')
+    return temp.replace('%20', ' ').replace('%C3%A0', 'a').replace('%C3%B3', 'o').replace('%C3%A8', 'e').replace('%C3%A9', 'e').replace('%C3%A1', 'a').replace('%C3%8D', 'I').replace('%C3%93', 'O').replace('%C3%B1', u'ñ').replace('%C3%88', 'E')
     
 def generateDir(name):
     try:
@@ -48,7 +47,6 @@ def main():
                         ["/dav/101313-1718/", "Economia 2"],
                         ["/dav/101324-1718/", "Dret del Treball"],
                         ["/dav/101320-1718/", "Direccio Estrategica"]]
-    # baseDirectories = [["/dav/102022-1718/", "Sistemes"]]
     for baseDirectory in baseDirectories:
         main2(base + baseDirectory[1] + "/", baseDirectory[0])
         print "\n"
@@ -82,12 +80,7 @@ def main2(base, baseDirectory):
         i+=1
     
     for file in files:
-        print "   " + str(file[0])
-    # print ""
-    # print directories
-    # print ""
-    # print realDirectories
-        
+        print "   " + str(file[0])        
     
     # EMPEZAMOS LAS DESCARGAS    
 
