@@ -26,7 +26,6 @@ def isDirectory(files, directories, realDirectories, baseDirectory):
     return files, directories, realDirectories
     
 def fixString(temp):
-    print [temp]
     temp = temp.replace('%20', ' ') # BLANK SPACES
 
     temp = temp.replace('%C3%A0', 'a') # à
@@ -47,10 +46,6 @@ def fixString(temp):
     temp = temp.replace('n%CC%83', u'ñ') # ñ
     
     temp = temp.replace('%CC%81', '')# ´ simbol
-    
-    print [temp]
-    print ""
-    
     
     return temp
     
@@ -113,7 +108,7 @@ def main2(base, baseDirectory):
         
     i = 0
     for file in files:
-        # print "   " + str(file[0])
+        print "   " + str(file[0])
         temp1 = file[0].replace(baseDirectory, "")
         temp1 = temp1.split('/')
         if len(temp1) == 1:
