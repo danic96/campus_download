@@ -29,7 +29,7 @@ def fixString(temp):
     temp = temp.replace('%20', ' ') # BLANK SPACES
 
     temp = temp.replace('%C3%A0', 'a') # à
-    temp = temp.replace('%C3%A1', 'a') # á falta à
+    temp = temp.replace('%C3%A1', 'a') # á falta À i Á
     
     temp = temp.replace('%C3%88', 'E') # È
     temp = temp.replace('%C3%A8', 'e') # È???
@@ -108,7 +108,7 @@ def main2(base, baseDirectory):
         
     i = 0
     for file in files:
-        print "   " + str(fixString(file[0]))
+        print "   " + fixString(file[0].encode("utf8"))
         temp1 = file[0].replace(baseDirectory, "")
         temp1 = temp1.split('/')
         if len(temp1) == 1:
