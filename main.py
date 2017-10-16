@@ -26,8 +26,10 @@ def isDirectory(files, directories, realDirectories, baseDirectory):
     return files, directories, realDirectories
     
 def fixString(temp):
+    print [temp]
     temp = temp.replace('%20', ' ') # BLANK SPACES
-    temp = temp.replace('%C3%A0', 'A') # À
+
+    temp = temp.replace('%C3%A0', 'a') # à
     temp = temp.replace('%C3%A1', 'a') # á falta à
     
     temp = temp.replace('%C3%88', 'E') # È
@@ -35,10 +37,19 @@ def fixString(temp):
     temp = temp.replace('%C3%A9', 'e') # é
     
     temp = temp.replace('%C3%8D', 'I') # Í
+    # temp = temp.replace('%C3%8D', 'i') # í ???
+    temp = temp.replace('%C3%AD', 'i') # í
+    
     temp = temp.replace('%C3%93', 'O') # Ó
     temp = temp.replace('%C3%B3', 'o') # Ó ????
     
     temp = temp.replace('%C3%B1', u'ñ') # ñ
+    temp = temp.replace('n%CC%83', u'ñ') # ñ
+    
+    temp = temp.replace('%CC%81', '')# ´ simbol
+    
+    print [temp]
+    print ""
     
     
     return temp
@@ -75,7 +86,7 @@ def main2(base, baseDirectory):
     
     time = 0
 
-    print "https://cv.udl.cat" + baseDirectory # DIRECCIO AMSA
+    print "https://cv.udl.cat" + baseDirectory
     passw = open("pass", "r")
     webdav = easywebdav.connect('cv.udl.cat',
                                 username=sys.argv[1],
@@ -92,10 +103,7 @@ def main2(base, baseDirectory):
         sleep(time)
         files, directories , realDirectories= isDirectory(files, directories, realDirectories, baseDirectory)
         sleep(time)
-        i+=1
-    
-    for file in files:
-        print "   " + str(file[0])        
+        i+=1      
     
     # EMPEZAMOS LAS DESCARGAS    
 
@@ -105,10 +113,11 @@ def main2(base, baseDirectory):
         
     i = 0
     for file in files:
+        # print "   " + str(file[0])
         temp1 = file[0].replace(baseDirectory, "")
         temp1 = temp1.split('/')
         if len(temp1) == 1:
-            webdav.download(file[0], base+temp1[len(temp1)-1])
+            webdav.download(file[0], fixString(base+temp1[len(temp1)-1]))
         else:        
             for directory in realDirectories:
                 if len(temp1) == len(directory.split("/")):
