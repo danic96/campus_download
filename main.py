@@ -108,7 +108,7 @@ def main2(base, baseDirectory):
         
     i = 0
     for file in files:
-        print "   " + str(file[0])
+        print "   " + str(fixString(file[0]))
         temp1 = file[0].replace(baseDirectory, "")
         temp1 = temp1.split('/')
         if len(temp1) == 1:
