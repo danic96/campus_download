@@ -26,7 +26,22 @@ def isDirectory(files, directories, realDirectories, baseDirectory):
     return files, directories, realDirectories
     
 def fixString(temp):
-    return temp.replace('%20', ' ').replace('%C3%A0', 'a').replace('%C3%B3', 'o').replace('%C3%A8', 'e').replace('%C3%A9', 'e').replace('%C3%A1', 'a').replace('%C3%8D', 'I').replace('%C3%93', 'O').replace('%C3%B1', u'ñ').replace('%C3%88', 'E')
+    temp = temp.replace('%20', ' ') # BLANK SPACES
+    temp = temp.replace('%C3%A0', 'A') # À
+    temp = temp.replace('%C3%A1', 'a') # á falta à
+    
+    temp = temp.replace('%C3%88', 'E') # È
+    temp = temp.replace('%C3%A8', 'e') # È???
+    temp = temp.replace('%C3%A9', 'e') # é
+    
+    temp = temp.replace('%C3%8D', 'I') # Í
+    temp = temp.replace('%C3%93', 'O') # Ó
+    temp = temp.replace('%C3%B3', 'o') # Ó ????
+    
+    temp = temp.replace('%C3%B1', u'ñ') # ñ
+    
+    
+    return temp
     
 def generateDir(name):
     try:
