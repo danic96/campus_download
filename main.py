@@ -36,16 +36,20 @@ def fixString(temp):
     temp = temp.replace('%C3%A9', 'e') # é
     
     temp = temp.replace('%C3%8D', 'I') # Í
+    temp = temp.replace('%C3%89', 'I') # Ì ???
     # temp = temp.replace('%C3%8D', 'i') # í ???
     temp = temp.replace('%C3%AD', 'i') # í
     
     temp = temp.replace('%C3%93', 'O') # Ó
-    temp = temp.replace('%C3%B3', 'o') # Ó ????
+    temp = temp.replace('%C3%B2', 'o') # ò ???
+    temp = temp.replace('%C3%B3', 'o') # ó ???
     
+    temp = temp.replace('%C3%BA', 'u') # ú
+        
     temp = temp.replace('%C3%B1', u'ñ') # ñ
     temp = temp.replace('n%CC%83', u'ñ') # ñ
     
-    temp = temp.replace('%CC%81', '')# ´ simbol
+    temp = temp.replace('%CC%81', '') # ´ simbol
     
     return temp
     
