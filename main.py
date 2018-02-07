@@ -66,12 +66,19 @@ def main():
         return -1
     base = "downloads/"
     generateDir(base)
-    baseDirectories = [["/dav/102013-1718/", "AMSA"], 
+    baseDirectories =  [["/dav/102013-1718/", "AMSA"], 
                         ["/dav/102022-1718/", "Sistemes"],
                         ["/dav/102020-1718/", "IA"],
                         ["/dav/101313-1718/", "Economia 2"],
                         ["/dav/101324-1718/", "Dret del Treball"],
-                        ["/dav/101320-1718/", "Direccio Estrategica"]]
+                        ["/dav/101320-1718/", "Direccio Estrategica"],
+                        ["/dav/101317-1718/", "Politica Economica"],
+                        ["/dav/102019-1718/", "Ampliacio"],
+                        ["/dav/102024-1718/", "Xarxes 2"],
+                        ["/dav/101326-1718/", "Direccio Operacions"],
+                        ["/dav/101328-1718/", "Direccio Financera"],
+                        ["/dav/101329-1718/", "Econometria"],
+                        ["/dav/102052-1718/", "Requeriments"]]
     for baseDirectory in baseDirectories:
         main2(base + baseDirectory[1] + "/", baseDirectory[0])
         print "\n"
@@ -129,7 +136,9 @@ def main2(base, baseDirectory):
                             break
                         j += 1
                     if match == True:
-                        webdav.download(file[0], fixString(base+directory+temp1[len(temp1)-1]))
+                        if ".URL" not in file[0]:
+                            # print file[0]
+                            webdav.download(file[0], fixString(base+directory+temp1[len(temp1)-1]))
                     pass
         i+=1
         
