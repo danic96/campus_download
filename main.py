@@ -5,6 +5,8 @@ from os import mkdir
 from time import sleep
 import sys
 
+import getpass
+
 def isDirectory(files, directories, realDirectories, baseDirectory):
     i = 0
     while i < len(files):
@@ -60,10 +62,7 @@ def generateDir(name):
         # print "Unexpected error:", sys.exc_info()[0]
         pass
         
-def main():
-    if len(sys.argv) != 2:
-        print "ERROR USUARIO"
-        return -1
+def main(user, pswd):
     base = "downloads/"
     generateDir(base)
     baseDirectories =  [["/dav/102013-1718/", "AMSA"], 
@@ -80,10 +79,10 @@ def main():
                         ["/dav/101329-1718/", "Econometria"],
                         ["/dav/102052-1718/", "Requeriments"]]
     for baseDirectory in baseDirectories:
-        main2(base + baseDirectory[1] + "/", baseDirectory[0])
+        main2(base + baseDirectory[1] + "/", baseDirectory[0], user, pswd)
         print "\n"
     
-def main2(base, baseDirectory):
+def main2(base, baseDirectory, user, pswd):
     directories = []
     files = []
     realDirectories = []
@@ -93,10 +92,11 @@ def main2(base, baseDirectory):
     time = 0
 
     print "https://cv.udl.cat" + baseDirectory
-    passw = open("pass", "r")
+    # passw = open("pass", "r")
+    
     webdav = easywebdav.connect('cv.udl.cat',
-                                username=sys.argv[1],
-                                password=passw.read(),
+                                username=user,
+                                password=pswd,
                                 protocol='https',
                                 cert='')
 
@@ -143,4 +143,6 @@ def main2(base, baseDirectory):
         i+=1
         
 if __name__ == "__main__":
-    main()
+    user = raw_input("User: ")
+    pswd = getpass.getpass("Password: ")
+    main(user, pswd)
