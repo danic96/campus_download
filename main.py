@@ -91,6 +91,7 @@ def main2(base, baseDirectory, user, pswd):
     
     time = 0
 
+    print base.split("/")[1]
     print "https://cv.udl.cat" + baseDirectory
     # passw = open("pass", "r")
     
