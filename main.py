@@ -67,6 +67,8 @@ def generateDir(name):
 def main(user, pswd):
     base = "downloads/"
     generateDir(base)
+    global mod_files
+    mod_files = {}
     baseDirectories =  [["/dav/102013-1718/", "AMSA"], 
                         ["/dav/102022-1718/", "Sistemes"],
                         ["/dav/102020-1718/", "IA"],
@@ -83,8 +85,11 @@ def main(user, pswd):
     for baseDirectory in baseDirectories:
         main2(base + baseDirectory[1] + "/", baseDirectory[0], user, pswd)
         print "\n"
+        break
+    print mod_files
     
 def main2(base, baseDirectory, user, pswd):
+    global mod_files
     directories = []
     files = []
     realDirectories = []
@@ -109,7 +114,6 @@ def main2(base, baseDirectory, user, pswd):
     while i < len(directories):
         webdav.cd(directories[i])
         files += webdav.ls()
-        sleep(100)
         sleep(time)
         files, directories , realDirectories= isDirectory(files, directories, realDirectories, baseDirectory)
         sleep(time)
@@ -121,6 +125,12 @@ def main2(base, baseDirectory, user, pswd):
     for dir in realDirectories:
         generateDir(base+dir)
         
+    # FILES DONWLOAD
+    print files[0]
+    print " " + str(files[0][0])
+    print " " + str(files[0][2])
+    print " " + str(files[0][3])
+    
     i = 0
     for file in files:
         print "   " + fixString(file[0].encode("utf8"))
