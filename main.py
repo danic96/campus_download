@@ -7,6 +7,8 @@ import sys
 
 import getpass
 
+from time import sleep
+
 def isDirectory(files, directories, realDirectories, baseDirectory):
     i = 0
     while i < len(files):
@@ -107,6 +109,7 @@ def main2(base, baseDirectory, user, pswd):
     while i < len(directories):
         webdav.cd(directories[i])
         files += webdav.ls()
+        sleep(100)
         sleep(time)
         files, directories , realDirectories= isDirectory(files, directories, realDirectories, baseDirectory)
         sleep(time)
