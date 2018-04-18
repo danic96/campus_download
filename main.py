@@ -9,6 +9,8 @@ import getpass
 
 from time import sleep
 
+import ast
+
 def isDirectory(files, directories, realDirectories, baseDirectory):
     i = 0
     while i < len(files):
@@ -68,7 +70,14 @@ def main(user, pswd):
     base = "downloads/"
     generateDir(base)
     global mod_files
-    mod_files = {}
+    try:
+        f = open ('files.txt','r')
+        mod_files = f.read()
+        mod_files = ast.literal_eval(mod_files)
+        f.close()
+    except:
+        mod_files = {}
+        
     baseDirectories =  [["/dav/102013-1718/", "AMSA"], 
                         ["/dav/102022-1718/", "Sistemes"],
                         ["/dav/102020-1718/", "IA"],
@@ -86,7 +95,11 @@ def main(user, pswd):
         main2(base + baseDirectory[1] + "/", baseDirectory[0], user, pswd)
         print "\n"
         break
-    print mod_files
+    # print mod_files
+    
+    f = open ('files.txt','w')
+    f.write(str(mod_files))    
+    f.close()
     
 def main2(base, baseDirectory, user, pswd):
     global mod_files
@@ -126,18 +139,24 @@ def main2(base, baseDirectory, user, pswd):
         generateDir(base+dir)
         
     # FILES DONWLOAD
-    print files[0]
-    print " " + str(files[0][0])
-    print " " + str(files[0][2])
-    print " " + str(files[0][3])
+    
+    # print files[0]
+    # print " " + str(files[0][0]) # nom fitxer
+    # print " " + str(files[0][2]) # data modificacio
+    # print " " + str(files[0][3]) # data creacio
+    # return 0
     
     i = 0
     for file in files:
+        file_name = file[0]
+        file_date = file[2]
         print "   " + fixString(file[0].encode("utf8"))
         temp1 = file[0].replace(baseDirectory, "")
         temp1 = temp1.split('/')
         if len(temp1) == 1:
-            webdav.download(file[0], fixString(base+temp1[len(temp1)-1]))
+            # webdav.download(file[0], fixString(base+temp1[len(temp1)-1]))
+            downloadFile(file[0], file[2], base, "", temp1)
+            mod_files[file_name] = file_date
         else:        
             for directory in realDirectories:
                 if len(temp1) == len(directory.split("/")):
@@ -150,12 +169,18 @@ def main2(base, baseDirectory, user, pswd):
                             break
                         j += 1
                     if match == True:
-                        if ".URL" not in file[0]:
-                            # print file[0]
-                            webdav.download(file[0], fixString(base+directory+temp1[len(temp1)-1]))
+                        downloadFile(file[0], file[2], base, directory, temp1)
+                        mod_files[file_name] = file_date
+                        # print mod_files
                     pass
         i+=1
         
+def downloadFile(filen, filed, base, directory, temp):
+    if ".URL" not in filen and (filen not in mod_files or filed != mod_files[filen]):
+        webdav.download(filen, fixString(base+directory+temp[len(temp)-1]))
+    else:
+        print "     Not downloaded"
+
 if __name__ == "__main__":
     user = raw_input("User: ")
     pswd = getpass.getpass("Password: ")
