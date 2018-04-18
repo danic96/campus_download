@@ -94,7 +94,7 @@ def main(user, pswd):
     for baseDirectory in baseDirectories:
         main2(base + baseDirectory[1] + "/", baseDirectory[0], user, pswd)
         print "\n"
-        break
+        # break
     # print mod_files
     
     f = open ('files.txt','w')
@@ -155,7 +155,7 @@ def main2(base, baseDirectory, user, pswd):
         temp1 = temp1.split('/')
         if len(temp1) == 1:
             # webdav.download(file[0], fixString(base+temp1[len(temp1)-1]))
-            downloadFile(file[0], file[2], base, "", temp1)
+            downloadFile(file[0], file[2], base, "", temp1, webdav)
             mod_files[file_name] = file_date
         else:        
             for directory in realDirectories:
@@ -169,13 +169,13 @@ def main2(base, baseDirectory, user, pswd):
                             break
                         j += 1
                     if match == True:
-                        downloadFile(file[0], file[2], base, directory, temp1)
+                        downloadFile(file[0], file[2], base, directory, temp1, webdav)
                         mod_files[file_name] = file_date
                         # print mod_files
                     pass
         i+=1
         
-def downloadFile(filen, filed, base, directory, temp):
+def downloadFile(filen, filed, base, directory, temp, webdav):
     if ".URL" not in filen and (filen not in mod_files or filed != mod_files[filen]):
         webdav.download(filen, fixString(base+directory+temp[len(temp)-1]))
     else:
