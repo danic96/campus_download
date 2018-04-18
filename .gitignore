@@ -104,3 +104,5 @@ ENV/
 download*
 pass
 temp*
+*.txt
+
