@@ -150,7 +150,7 @@ def main2(base, baseDirectory, user, pswd):
     for file in files:
         file_name = file[0]
         file_date = file[2]
-        print "   " + fixString(file[0].encode("utf8"))
+        # print "   " + fixString(file[0].encode("utf8"))
         temp1 = file[0].replace(baseDirectory, "")
         temp1 = temp1.split('/')
         if len(temp1) == 1:
@@ -177,9 +177,11 @@ def main2(base, baseDirectory, user, pswd):
         
 def downloadFile(filen, filed, base, directory, temp, webdav):
     if ".URL" not in filen and (filen not in mod_files or filed != mod_files[filen]):
+        print "   " + fixString(filen.encode("utf8"))
         webdav.download(filen, fixString(base+directory+temp[len(temp)-1]))
     else:
-        print "     Not downloaded"
+        # print "     Not downloaded"
+        pass
 
 if __name__ == "__main__":
     user = raw_input("User: ")
