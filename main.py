@@ -77,7 +77,9 @@ def main(user, pswd):
         f.close()
     except:
         mod_files = {}
-        
+    
+    # 4t curs    
+    """
     baseDirectories =  [["/dav/102013-1718/", "AMSA"], 
                         ["/dav/102022-1718/", "Sistemes"],
                         ["/dav/102020-1718/", "IA"],
@@ -91,6 +93,16 @@ def main(user, pswd):
                         ["/dav/101328-1718/", "Direccio Financera"],
                         ["/dav/101329-1718/", "Econometria"],
                         ["/dav/102052-1718/", "Requeriments"]]
+    """                 
+    baseDirectories =  [["/dav/102021-1819", "ASPECTES LEGALS"],
+                        ["/dav/101321-1819", "PRESSUPOSTARIA"],
+                        ["/dav/101323-1819", "ECONOMIA MUNDIAL"],
+                        ["/dav/101313-1819", "ECONOMIA 2"],
+                        ["/dav/101322-1819", "PLANIFICACIO FISCAL"],
+                        ["/dav/101327-1819", "ANALISI ESTATS"],
+                        ["/dav/102029-1819", "ARQUITECTURES PROGRAMARI"],
+                        ["/dav/101329-1819", "ECONOMETRIA"],
+                        ["/dav/101328-1819", "DIRECCIO FINANCERA"]]
     for baseDirectory in baseDirectories:
         main2(base + baseDirectory[1] + "/", baseDirectory[0], user, pswd)
         print "\n"
