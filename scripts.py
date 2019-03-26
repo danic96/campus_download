@@ -65,10 +65,9 @@ def generate_dir(name):
 
 def login(login_url, username, password):
     login_data = {
-        'login_username': username,
-        'login_password': password,
-        'send_to': '',
-        'submit': 'submit'
+        'eid': username,
+        'pw': password,
+        'submit': 'inicia+la+sessió'
     }
     user_agent = {'User-agent': 'Mozilla/5.0'}
     session = requests.Session()
@@ -76,8 +75,10 @@ def login(login_url, username, password):
     if r.status_code == 200:
         print "login succesful!!!"
 
+    return session
 
-def getUrlWithSession(session, url):
+
+def get_ulr_with_session(session, url):
     statuscode = -1
     while statuscode != 200:
         try:

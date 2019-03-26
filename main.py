@@ -6,14 +6,22 @@ import easywebdav
 import getpass
 from time import sleep
 import ast
-import bs4 as bs
+
+import json
+import pprint
 
 
 def get_base_directories(username, password, login_url):
+    base_directories = []
+
     session = login(login_url, username, password)
-    html = getUrlWithSession("https://cv.udl.cat/portal")
-    soup = bs(html, 'lxml')
-    return []
+    html = get_ulr_with_session(session, "https://cv.udl.cat/direct/section/llistaassignatures_llistat/site/" +
+                                         "llistaassignatures/datasource/llistaassignatures.json")
+    urls = json.loads(html)['value']
+    for key in urls:
+        base_directories.append(["/dav/" + key, urls[key]['value']['title']])
+
+    return base_directories
 
         
 def main(username, password, login_url):
@@ -27,23 +35,11 @@ def main(username, password, login_url):
         f.close()
     except:
         mod_files = {}
-    
-    # 5e curs
-    base_directories = [["/dav/102021-1819", "ASPECTES LEGALS"],
-                        ["/dav/101321-1819", "PRESSUPOSTARIA"],
-                        ["/dav/101323-1819", "ECONOMIA MUNDIAL"],
-                        ["/dav/101313-1819", "ECONOMIA 2"],
-                        ["/dav/101322-1819", "PLANIFICACIO FISCAL"],
-                        ["/dav/101327-1819", "ANALISI ESTATS"],
-                        ["/dav/102029-1819", "ARQUITECTURES PROGRAMARI"],
-                        ["/dav/101329-1819", "ECONOMETRIA"],
-                        ["/dav/101328-1819", "DIRECCIO FINANCERA"]]
 
     base_directories = get_base_directories(username, password, login_url)
 
     print base_directories
 
-    exit()
     for base_directory in base_directories:
         search_directory(base + base_directory[1] + "/", base_directory[0], username, password)
         print "\n"
