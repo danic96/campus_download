@@ -72,8 +72,6 @@ def login(login_url, username, password):
     user_agent = {'User-agent': 'Mozilla/5.0'}
     session = requests.Session()
     r = session.post(login_url, data=login_data, headers=user_agent)
-    if r.status_code == 200:
-        print "login succesful!!!"
 
     return session
 
