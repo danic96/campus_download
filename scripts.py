@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from os import mkdir
+from time import sleep
+import requests
 
 
 def is_directory(files, directories, real_directories, base_directory):
@@ -59,3 +61,29 @@ def generate_dir(name):
     except:
         # print "Unexpected error:", sys.exc_info()[0]
         pass
+
+
+def login(login_url, username, password):
+    login_data = {
+        'login_username': username,
+        'login_password': password,
+        'send_to': '',
+        'submit': 'submit'
+    }
+    user_agent = {'User-agent': 'Mozilla/5.0'}
+    session = requests.Session()
+    r = session.post(login_url, data=login_data, headers=user_agent)
+    if r.status_code == 200:
+        print "login succesful!!!"
+
+
+def getUrlWithSession(session, url):
+    statuscode = -1
+    while statuscode != 200:
+        try:
+            html = session.get(url)
+            statuscode = html.status_code
+        except Exception as e:
+            print "   Error por el lado de la pagina"
+            sleep(10)
+    return html.text

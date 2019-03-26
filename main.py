@@ -6,14 +6,17 @@ import easywebdav
 import getpass
 from time import sleep
 import ast
+import bs4 as bs
 
 
-def get_base_directories():
-
+def get_base_directories(username, password, login_url):
+    session = login(login_url, username, password)
+    html = getUrlWithSession("https://cv.udl.cat/portal")
+    soup = bs(html, 'lxml')
     return []
 
         
-def main(user, pswd):
+def main(username, password, login_url):
     base = "downloads/"
     generate_dir(base)
     global mod_files
@@ -36,13 +39,13 @@ def main(user, pswd):
                         ["/dav/101329-1819", "ECONOMETRIA"],
                         ["/dav/101328-1819", "DIRECCIO FINANCERA"]]
 
-    base_directories = get_base_directories()
+    base_directories = get_base_directories(username, password, login_url)
 
     print base_directories
 
     exit()
     for base_directory in base_directories:
-        search_directory(base + base_directory[1] + "/", base_directory[0], user, pswd)
+        search_directory(base + base_directory[1] + "/", base_directory[0], username, password)
         print "\n"
     
     f = open('files.txt', 'w')
@@ -128,4 +131,5 @@ def download_file(filen, filed, base, directory, temp, webdav):
 if __name__ == "__main__":
     user = raw_input("User: ")
     pswd = getpass.getpass("Password: ")
-    main(user, pswd)
+    login_url = "https://cv.udl.cat/portal/xlogin"
+    main(user, pswd, login_url)
