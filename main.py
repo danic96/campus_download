@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
-import easywebdav
+from scripts import *
 
+import easywebdav
 import getpass
 from time import sleep
 import ast
 
-from scripts import *
 
+def get_base_directories():
 
-def new_base_directories():
-    pass
+    return []
 
         
 def main(user, pswd):
@@ -36,9 +36,9 @@ def main(user, pswd):
                         ["/dav/101329-1819", "ECONOMETRIA"],
                         ["/dav/101328-1819", "DIRECCIO FINANCERA"]]
 
-    new_base_directories()
+    base_directories = get_base_directories()
 
-    print new_base_directories
+    print base_directories
 
     exit()
     for base_directory in base_directories:
