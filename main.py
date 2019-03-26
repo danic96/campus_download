@@ -1,130 +1,62 @@
 # -*- coding: utf-8 -*-
 
+from scripts import *
+
 import easywebdav
-from os import mkdir
-from time import sleep
-import sys
-
 import getpass
-
 from time import sleep
-
 import ast
+import json
 
-def isDirectory(files, directories, realDirectories, baseDirectory):
-    i = 0
-    while i < len(files):
-        if files[i][1] == 0 and files[i][4] == '':
-            found = False
-            for directory in directories:
-                if directory == files[i][0]:
-                    found = True
-                    break
-            if found != True:
-                directories.append(files[i][0])
-                temp = files[i][0].replace(baseDirectory, "")
-                realDirectories.append(temp)
-                
-            del files[i]
-            i-=1
-        i+=1
-    
-    return files, directories, realDirectories
-    
-def fixString(temp):
-    temp = temp.replace('%20', ' ') # BLANK SPACES
 
-    temp = temp.replace('%C3%A0', 'a') # à
-    temp = temp.replace('%C3%A1', 'a') # á falta À i Á
-    
-    temp = temp.replace('%C3%88', 'E') # È
-    temp = temp.replace('%C3%A8', 'e') # È???
-    temp = temp.replace('%C3%A9', 'e') # é
-    
-    temp = temp.replace('%C3%8D', 'I') # Í
-    temp = temp.replace('%C3%89', 'I') # Ì ???
-    # temp = temp.replace('%C3%8D', 'i') # í ???
-    temp = temp.replace('%C3%AD', 'i') # í
-    
-    temp = temp.replace('%C3%93', 'O') # Ó
-    temp = temp.replace('%C3%B2', 'o') # ò ???
-    temp = temp.replace('%C3%B3', 'o') # ó ???
-    
-    temp = temp.replace('%C3%BA', 'u') # ú
+def get_base_directories(username, password, login_url):
+    base_directories = []
+
+    session = login(login_url, username, password)
+    html = get_ulr_with_session(session, "https://cv.udl.cat/direct/section/llistaassignatures_llistat/site/" +
+                                         "llistaassignatures/datasource/llistaassignatures.json")
+    urls = json.loads(html)['value']
+    for key in urls:
+        base_directories.append(["/dav/" + key, urls[key]['value']['title']])
+
+    return base_directories
+
         
-    temp = temp.replace('%C3%B1', u'ñ') # ñ
-    temp = temp.replace('n%CC%83', u'ñ') # ñ
-    
-    temp = temp.replace('%CC%81', '') # ´ simbol
-    
-    return temp
-    
-def generateDir(name):
-    try:
-        mkdir(fixString(name))
-    except:
-        # print "Unexpected error:", sys.exc_info()[0]
-        pass
-        
-def main(user, pswd):
+def main(username, password, login_url):
     base = "downloads/"
-    generateDir(base)
+    generate_dir(base)
     global mod_files
     try:
-        f = open ('files.txt','r')
+        f = open('files.txt', 'r')
         mod_files = f.read()
         mod_files = ast.literal_eval(mod_files)
         f.close()
     except:
         mod_files = {}
-    
-    # 4t curs    
-    """
-    baseDirectories =  [["/dav/102013-1718/", "AMSA"], 
-                        ["/dav/102022-1718/", "Sistemes"],
-                        ["/dav/102020-1718/", "IA"],
-                        ["/dav/101313-1718/", "Economia 2"],
-                        ["/dav/101324-1718/", "Dret del Treball"],
-                        ["/dav/101320-1718/", "Direccio Estrategica"],
-                        ["/dav/101317-1718/", "Politica Economica"],
-                        ["/dav/102019-1718/", "Ampliacio"],
-                        ["/dav/102024-1718/", "Xarxes 2"],
-                        ["/dav/101326-1718/", "Direccio Operacions"],
-                        ["/dav/101328-1718/", "Direccio Financera"],
-                        ["/dav/101329-1718/", "Econometria"],
-                        ["/dav/102052-1718/", "Requeriments"]]
-    """                 
-    baseDirectories =  [["/dav/102021-1819", "ASPECTES LEGALS"],
-                        ["/dav/101321-1819", "PRESSUPOSTARIA"],
-                        ["/dav/101323-1819", "ECONOMIA MUNDIAL"],
-                        ["/dav/101313-1819", "ECONOMIA 2"],
-                        ["/dav/101322-1819", "PLANIFICACIO FISCAL"],
-                        ["/dav/101327-1819", "ANALISI ESTATS"],
-                        ["/dav/102029-1819", "ARQUITECTURES PROGRAMARI"],
-                        ["/dav/101329-1819", "ECONOMETRIA"],
-                        ["/dav/101328-1819", "DIRECCIO FINANCERA"]]
-    for baseDirectory in baseDirectories:
-        main2(base + baseDirectory[1] + "/", baseDirectory[0], user, pswd)
+
+    base_directories = get_base_directories(username, password, login_url)
+
+    for base_directory in base_directories:
+        search_directory(base + base_directory[1] + "/", base_directory[0], username, password)
         print "\n"
-        # break
-    # print mod_files
     
-    f = open ('files.txt','w')
+    f = open('files.txt', 'w')
     f.write(str(mod_files))    
     f.close()
-    
-def main2(base, baseDirectory, user, pswd):
+
+
+def search_directory(base, base_directory, user, pswd):
     global mod_files
     directories = []
     files = []
-    realDirectories = []
+    real_directories = []
 
-    directories.append(baseDirectory)
+    directories.append(base_directory)
     
     time = 0
 
     print base.split("/")[1]
-    print "https://cv.udl.cat" + baseDirectory
+    print "https://cv.udl.cat" + base_directory
     # passw = open("pass", "r")
     
     webdav = easywebdav.connect('cv.udl.cat',
@@ -133,44 +65,35 @@ def main2(base, baseDirectory, user, pswd):
                                 protocol='https',
                                 cert='')
 
-    
-    # LISTAR DIRECOTRIOS A CREAR Y ARCHIVOS A DESCARGAR
+    # LISTAR DIRECTORIOS A CREAR Y ARCHIVOS A DESCARGAR
     i = 0
     while i < len(directories):
         webdav.cd(directories[i])
         files += webdav.ls()
         sleep(time)
-        files, directories , realDirectories= isDirectory(files, directories, realDirectories, baseDirectory)
+        files, directories , real_directories = is_directory(files, directories, real_directories, base_directory)
         sleep(time)
-        i+=1      
+        i += 1
     
     # EMPEZAMOS LAS DESCARGAS    
 
-    generateDir(base)
-    for dir in realDirectories:
-        generateDir(base+dir)
-        
-    # FILES DONWLOAD
-    
-    # print files[0]
-    # print " " + str(files[0][0]) # nom fitxer
-    # print " " + str(files[0][2]) # data modificacio
-    # print " " + str(files[0][3]) # data creacio
-    # return 0
+    generate_dir(base)
+    for dir in real_directories:
+        generate_dir(base+dir)
     
     i = 0
     for file in files:
         file_name = file[0]
         file_date = file[2]
-        # print "   " + fixString(file[0].encode("utf8"))
-        temp1 = file[0].replace(baseDirectory, "")
+        # print "   " + fix_string(file[0].encode("utf8"))
+        temp1 = file[0].replace(base_directory, "")
         temp1 = temp1.split('/')
         if len(temp1) == 1:
-            # webdav.download(file[0], fixString(base+temp1[len(temp1)-1]))
-            downloadFile(file[0], file[2], base, "", temp1, webdav)
+            # webdav.download(file[0], fix_string(base+temp1[len(temp1)-1]))
+            download_file(file[0], file[2], base, "", temp1, webdav)
             mod_files[file_name] = file_date
         else:        
-            for directory in realDirectories:
+            for directory in real_directories:
                 if len(temp1) == len(directory.split("/")):
                     j = 0
                     temp2 = directory.split('/')
@@ -180,22 +103,25 @@ def main2(base, baseDirectory, user, pswd):
                             match = False
                             break
                         j += 1
-                    if match == True:
-                        downloadFile(file[0], file[2], base, directory, temp1, webdav)
+                    if match:
+                        download_file(file[0], file[2], base, directory, temp1, webdav)
                         mod_files[file_name] = file_date
                         # print mod_files
                     pass
-        i+=1
+        i += 1
         
-def downloadFile(filen, filed, base, directory, temp, webdav):
+        
+def download_file(filen, filed, base, directory, temp, webdav):
     if ".URL" not in filen and (filen not in mod_files or filed != mod_files[filen]):
-        print "   " + fixString(filen.encode("utf8"))
-        webdav.download(filen, fixString(base+directory+temp[len(temp)-1]))
+        print "   " + fix_string(filen.encode("utf8"))
+        webdav.download(filen, fix_string(base+directory+temp[len(temp)-1]))
     else:
         # print "     Not downloaded"
         pass
 
+
 if __name__ == "__main__":
     user = raw_input("User: ")
     pswd = getpass.getpass("Password: ")
-    main(user, pswd)
+    login_url = "https://cv.udl.cat/portal/xlogin"
+    main(user, pswd, login_url)
