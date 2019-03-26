@@ -6,9 +6,7 @@ import easywebdav
 import getpass
 from time import sleep
 import ast
-
 import json
-import pprint
 
 
 def get_base_directories(username, password, login_url):
@@ -37,8 +35,6 @@ def main(username, password, login_url):
         mod_files = {}
 
     base_directories = get_base_directories(username, password, login_url)
-
-    print base_directories
 
     for base_directory in base_directories:
         search_directory(base + base_directory[1] + "/", base_directory[0], username, password)
