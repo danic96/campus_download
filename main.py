@@ -2,16 +2,13 @@
 
 import easywebdav
 from os import mkdir
-from time import sleep
-import sys
 
 import getpass
-
 from time import sleep
-
 import ast
 
-def isDirectory(files, directories, realDirectories, baseDirectory):
+
+def is_directory(files, directories, real_directories, base_directory):
     i = 0
     while i < len(files):
         if files[i][1] == 0 and files[i][4] == '':
@@ -20,18 +17,19 @@ def isDirectory(files, directories, realDirectories, baseDirectory):
                 if directory == files[i][0]:
                     found = True
                     break
-            if found != True:
+            if not found:
                 directories.append(files[i][0])
-                temp = files[i][0].replace(baseDirectory, "")
-                realDirectories.append(temp)
+                temp = files[i][0].replace(base_directory, "")
+                real_directories.append(temp)
                 
             del files[i]
-            i-=1
-        i+=1
+            i -= 1
+        i += 1
     
-    return files, directories, realDirectories
-    
-def fixString(temp):
+    return files, directories, real_directories
+
+
+def fix_string(temp):
     temp = temp.replace('%20', ' ') # BLANK SPACES
 
     temp = temp.replace('%C3%A0', 'a') # à
@@ -58,13 +56,15 @@ def fixString(temp):
     temp = temp.replace('%CC%81', '') # ´ simbol
     
     return temp
-    
+
+
 def generateDir(name):
     try:
-        mkdir(fixString(name))
+        mkdir(fix_string(name))
     except:
         # print "Unexpected error:", sys.exc_info()[0]
         pass
+
         
 def main(user, pswd):
     base = "downloads/"
@@ -103,8 +103,8 @@ def main(user, pswd):
                         ["/dav/102029-1819", "ARQUITECTURES PROGRAMARI"],
                         ["/dav/101329-1819", "ECONOMETRIA"],
                         ["/dav/101328-1819", "DIRECCIO FINANCERA"]]
-    for baseDirectory in baseDirectories:
-        main2(base + baseDirectory[1] + "/", baseDirectory[0], user, pswd)
+    for base_directory in baseDirectories:
+        main2(base + base_directory[1] + "/", base_directory[0], user, pswd)
         print "\n"
         # break
     # print mod_files
@@ -113,18 +113,18 @@ def main(user, pswd):
     f.write(str(mod_files))    
     f.close()
     
-def main2(base, baseDirectory, user, pswd):
+def main2(base, base_directory, user, pswd):
     global mod_files
     directories = []
     files = []
-    realDirectories = []
+    real_directories = []
 
-    directories.append(baseDirectory)
+    directories.append(base_directory)
     
     time = 0
 
     print base.split("/")[1]
-    print "https://cv.udl.cat" + baseDirectory
+    print "https://cv.udl.cat" + base_directory
     # passw = open("pass", "r")
     
     webdav = easywebdav.connect('cv.udl.cat',
@@ -133,21 +133,20 @@ def main2(base, baseDirectory, user, pswd):
                                 protocol='https',
                                 cert='')
 
-    
-    # LISTAR DIRECOTRIOS A CREAR Y ARCHIVOS A DESCARGAR
+    # LISTAR DIRECTORIOS A CREAR Y ARCHIVOS A DESCARGAR
     i = 0
     while i < len(directories):
         webdav.cd(directories[i])
         files += webdav.ls()
         sleep(time)
-        files, directories , realDirectories= isDirectory(files, directories, realDirectories, baseDirectory)
+        files, directories , real_directories = is_directory(files, directories, real_directories, base_directory)
         sleep(time)
         i+=1      
     
     # EMPEZAMOS LAS DESCARGAS    
 
     generateDir(base)
-    for dir in realDirectories:
+    for dir in real_directories:
         generateDir(base+dir)
         
     # FILES DONWLOAD
@@ -162,15 +161,15 @@ def main2(base, baseDirectory, user, pswd):
     for file in files:
         file_name = file[0]
         file_date = file[2]
-        # print "   " + fixString(file[0].encode("utf8"))
-        temp1 = file[0].replace(baseDirectory, "")
+        # print "   " + fix_string(file[0].encode("utf8"))
+        temp1 = file[0].replace(base_directory, "")
         temp1 = temp1.split('/')
         if len(temp1) == 1:
-            # webdav.download(file[0], fixString(base+temp1[len(temp1)-1]))
+            # webdav.download(file[0], fix_string(base+temp1[len(temp1)-1]))
             downloadFile(file[0], file[2], base, "", temp1, webdav)
             mod_files[file_name] = file_date
         else:        
-            for directory in realDirectories:
+            for directory in real_directories:
                 if len(temp1) == len(directory.split("/")):
                     j = 0
                     temp2 = directory.split('/')
@@ -189,8 +188,8 @@ def main2(base, baseDirectory, user, pswd):
         
 def downloadFile(filen, filed, base, directory, temp, webdav):
     if ".URL" not in filen and (filen not in mod_files or filed != mod_files[filen]):
-        print "   " + fixString(filen.encode("utf8"))
-        webdav.download(filen, fixString(base+directory+temp[len(temp)-1]))
+        print "   " + fix_string(filen.encode("utf8"))
+        webdav.download(filen, fix_string(base+directory+temp[len(temp)-1]))
     else:
         # print "     Not downloaded"
         pass
