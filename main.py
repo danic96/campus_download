@@ -8,6 +8,10 @@ import ast
 
 from scripts import *
 
+
+def new_base_directories():
+    pass
+
         
 def main(user, pswd):
     base = "downloads/"
@@ -21,43 +25,32 @@ def main(user, pswd):
     except:
         mod_files = {}
     
-    # 4t curs    
-    """
-    base_directories =  [["/dav/102013-1718/", "AMSA"], 
-                        ["/dav/102022-1718/", "Sistemes"],
-                        ["/dav/102020-1718/", "IA"],
-                        ["/dav/101313-1718/", "Economia 2"],
-                        ["/dav/101324-1718/", "Dret del Treball"],
-                        ["/dav/101320-1718/", "Direccio Estrategica"],
-                        ["/dav/101317-1718/", "Politica Economica"],
-                        ["/dav/102019-1718/", "Ampliacio"],
-                        ["/dav/102024-1718/", "Xarxes 2"],
-                        ["/dav/101326-1718/", "Direccio Operacions"],
-                        ["/dav/101328-1718/", "Direccio Financera"],
-                        ["/dav/101329-1718/", "Econometria"],
-                        ["/dav/102052-1718/", "Requeriments"]]
-    """                 
+    # 5e curs
     base_directories = [["/dav/102021-1819", "ASPECTES LEGALS"],
-                       ["/dav/101321-1819", "PRESSUPOSTARIA"],
-                       ["/dav/101323-1819", "ECONOMIA MUNDIAL"],
-                       ["/dav/101313-1819", "ECONOMIA 2"],
-                       ["/dav/101322-1819", "PLANIFICACIO FISCAL"],
-                       ["/dav/101327-1819", "ANALISI ESTATS"],
-                       ["/dav/102029-1819", "ARQUITECTURES PROGRAMARI"],
-                       ["/dav/101329-1819", "ECONOMETRIA"],
-                       ["/dav/101328-1819", "DIRECCIO FINANCERA"]]
+                        ["/dav/101321-1819", "PRESSUPOSTARIA"],
+                        ["/dav/101323-1819", "ECONOMIA MUNDIAL"],
+                        ["/dav/101313-1819", "ECONOMIA 2"],
+                        ["/dav/101322-1819", "PLANIFICACIO FISCAL"],
+                        ["/dav/101327-1819", "ANALISI ESTATS"],
+                        ["/dav/102029-1819", "ARQUITECTURES PROGRAMARI"],
+                        ["/dav/101329-1819", "ECONOMETRIA"],
+                        ["/dav/101328-1819", "DIRECCIO FINANCERA"]]
+
+    new_base_directories()
+
+    print new_base_directories
+
+    exit()
     for base_directory in base_directories:
-        main2(base + base_directory[1] + "/", base_directory[0], user, pswd)
+        search_directory(base + base_directory[1] + "/", base_directory[0], user, pswd)
         print "\n"
-        # break
-    # print mod_files
     
     f = open('files.txt', 'w')
     f.write(str(mod_files))    
     f.close()
 
 
-def main2(base, base_directory, user, pswd):
+def search_directory(base, base_directory, user, pswd):
     global mod_files
     directories = []
     files = []
@@ -92,14 +85,6 @@ def main2(base, base_directory, user, pswd):
     generate_dir(base)
     for dir in real_directories:
         generate_dir(base+dir)
-        
-    # FILES DONWLOAD
-    
-    # print files[0]
-    # print " " + str(files[0][0]) # nom fitxer
-    # print " " + str(files[0][2]) # data modificacio
-    # print " " + str(files[0][3]) # data creacio
-    # return 0
     
     i = 0
     for file in files:
