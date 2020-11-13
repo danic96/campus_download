@@ -7,6 +7,7 @@ import getpass
 from time import sleep
 import ast
 import json
+from bs4 import BeautifulSoup as bs
 
 
 def get_base_directories(username, password, login_url):
@@ -15,13 +16,18 @@ def get_base_directories(username, password, login_url):
     session = login(login_url, username, password)
     # html = get_ulr_with_session(session, "https://cv.udl.cat/direct/section/llistaassignatures_llistat/site/" +
     #                                      "llistaassignatures/datasource/llistaassignatures.json")
-    html = get_url_with_session(session, "https://cv.udl.cat/portal")
-    urls = json.loads(html)['value']
-    print(urls)
-    for key in urls:
-        base_directories.append(["/dav/" + key, urls[key]['value']['title']])
+    html = get_ulr_with_session(session, "https://cv.udl.cat/portal")
+    soup = bs(html)
+    # urls = json.loads(html)['value']
+    urls = soup.find_all('div', {'class': 'fav-title'})
+    # print(urls)
 
-    return base_directories
+    for key in urls:
+        # base_directories.append(["/dav/" + key, urls[key]['value']['title']])
+        directory = key.find('a')
+        base_directories.append(directory['href'])
+    print(base_directories)
+    return base_directories[1:20]
 
         
 def main(username, password, login_url):
@@ -39,7 +45,8 @@ def main(username, password, login_url):
     base_directories = get_base_directories(username, password, login_url)
 
     for base_directory in base_directories:
-        search_directory(base + base_directory[1] + "/", base_directory[0], username, password)
+        # search_directory(base + base_directory[1] + "/", base_directory[0], username, password)
+        search_directory(base_directory, base_directory, username, password)
         print("\n")
     
     f = open('files.txt', 'w')
@@ -52,7 +59,9 @@ def search_directory(base, base_directory, user, pswd):
     directories = []
     files = []
     real_directories = []
-
+    
+    print(base)
+    print(base_directory)
     directories.append(base_directory)
     
     time = 0
@@ -70,8 +79,10 @@ def search_directory(base, base_directory, user, pswd):
     # LISTAR DIRECTORIOS A CREAR Y ARCHIVOS A DESCARGAR
     i = 0
     while i < len(directories):
-        webdav.cd(directories[i])
+        # webdav.cd(directories[i])
+        webdav.cd()
         files += webdav.ls()
+        print(files)
         sleep(time)
         files, directories , real_directories = is_directory(files, directories, real_directories, base_directory)
         sleep(time)
