@@ -13,9 +13,11 @@ def get_base_directories(username, password, login_url):
     base_directories = []
 
     session = login(login_url, username, password)
-    html = get_ulr_with_session(session, "https://cv.udl.cat/direct/section/llistaassignatures_llistat/site/" +
-                                         "llistaassignatures/datasource/llistaassignatures.json")
+    # html = get_ulr_with_session(session, "https://cv.udl.cat/direct/section/llistaassignatures_llistat/site/" +
+    #                                      "llistaassignatures/datasource/llistaassignatures.json")
+    html = get_url_with_session(session, "https://cv.udl.cat/portal")
     urls = json.loads(html)['value']
+    print(urls)
     for key in urls:
         base_directories.append(["/dav/" + key, urls[key]['value']['title']])
 
@@ -38,7 +40,7 @@ def main(username, password, login_url):
 
     for base_directory in base_directories:
         search_directory(base + base_directory[1] + "/", base_directory[0], username, password)
-        print "\n"
+        print("\n")
     
     f = open('files.txt', 'w')
     f.write(str(mod_files))    
@@ -55,8 +57,8 @@ def search_directory(base, base_directory, user, pswd):
     
     time = 0
 
-    print base.split("/")[1]
-    print "https://cv.udl.cat" + base_directory
+    print(base.split("/")[1])
+    print("https://cv.udl.cat" + base_directory)
     # passw = open("pass", "r")
     
     webdav = easywebdav.connect('cv.udl.cat',
@@ -113,7 +115,7 @@ def search_directory(base, base_directory, user, pswd):
         
 def download_file(filen, filed, base, directory, temp, webdav):
     if ".URL" not in filen and (filen not in mod_files or filed != mod_files[filen]):
-        print "   " + fix_string(filen.encode("utf8"))
+        print("   " + fix_string(filen.encode("utf8")))
         webdav.download(filen, fix_string(base+directory+temp[len(temp)-1]))
     else:
         # print "     Not downloaded"
@@ -121,7 +123,7 @@ def download_file(filen, filed, base, directory, temp, webdav):
 
 
 if __name__ == "__main__":
-    user = raw_input("User: ")
+    user = input("User: ")
     pswd = getpass.getpass("Password: ")
     login_url = "https://cv.udl.cat/portal/xlogin"
     main(user, pswd, login_url)

@@ -83,6 +83,6 @@ def get_ulr_with_session(session, url):
             html = session.get(url)
             statuscode = html.status_code
         except Exception as e:
-            print "   Error por el lado de la pagina"
+            print("   Error por el lado de la pagina")
             sleep(10)
     return html.text
